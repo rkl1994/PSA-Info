@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/navi_search_word"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:background="#000"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="40sp" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:layout_marginTop="125dp"
+        android:background="@drawable/main_purple_radius" >
+
+        <FrameLayout
+            android:layout_width="120dip"
+            android:layout_height="120dip"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" >
+
+            <Button
+                android:id="@+id/navi_middle_icon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/phone_navi_icon" />
+        </FrameLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/navi_search_result_list"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:scrollbars="none"
+        android:divider="@drawable/music_equalizer_bar" >
+    </ListView>
+    
+     <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboard_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#000"
+            android:keyTextSize="35sp"
+            android:layout_marginBottom="50dp"
+            android:keyBackground="@drawable/btn_keyboard_key" 
+            android:keyTextColor="#595959"
+            android:visibility="gone" />
+    </RelativeLayout>
+   
+
+</RelativeLayout>
