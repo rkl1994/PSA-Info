@@ -1,5 +1,8 @@
 package app.psa;
 
+import java.util.Set;
+
+import android.R.string;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,12 +10,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
+import android.widget.TextView;
 
 
 public class MySurfaceView extends SurfaceView implements Callback, Runnable {
@@ -36,7 +42,19 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	private float SmallRockerCircleR = 0;
 	Bitmap mBg; 
 	Bitmap mInner; 
-
+	TextView mNum;
+	int i = 44;
+	
+	private Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			String text = (String)msg.obj;
+			mNum.setText(text);
+		}
+	};
+	
 	public MySurfaceView(Context context) {
 		super(context);
 		initial();
@@ -46,6 +64,10 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 		// TODO Auto-generated constructor stub
 		super(context, attributeSet);
 		initial();
+	}
+	
+	public void setview(TextView textView){
+		mNum = textView;
 	}
 	
 	private void initial(){
@@ -121,14 +143,19 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.e("Action_Down", "true");
-			SmallRockerCircleY = default_SmallRockerCircleY;
+			float tmp = event.getY();
+			SmallRockerCircleY = default_SmallRockerCircleY;	
 			return true;
 		}
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
 			// 当触屏区域不在活动范围内
-			if (Math.sqrt(Math.pow((RockerCircleX - (int) event.getX()), 2) + 
-					Math.pow((RockerCircleY - (int) event.getY()), 2)) >= RockerCircleR) {
+			double result = Math.sqrt(Math.pow((RockerCircleX - (int) event.getX()), 2) + 
+					Math.pow((RockerCircleY - (int) event.getY()), 2));
+			Log.e("Result ", String.valueOf(result)+"    "+String.valueOf(RockerCircleR));
+			if (result < RockerCircleR) {
+				Log.e("同济", "result < RockerCircleR");
+			}
+			if (result >= RockerCircleR) {
 				Log.d("y", String.valueOf(event.getY()));
 				if (Math.sqrt(Math.pow(RockerCircleY+RockerCircleR - (int)event.getY(),2)) <= 100) {
 					if ((int)event.getY()< RockerCircleY+RockerCircleR ) {
@@ -140,7 +167,9 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 					Log.d("event.getY()", String.valueOf(event.getY()));
 					 SmallRockerCircleY = default_SmallRockerCircleY;
 					return true;
-			   }
+			    }else {
+		
+			    } 
 				//得到摇杆与触屏点所形成的角度  
 				double tempRad = getRad(RockerCircleX, RockerCircleY, event.getX(), event.getY());
 				//保证内部小圆运动的长度限制
@@ -148,12 +177,24 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
 				//SmallRockerCircleY = event.getY();
 			} else {//如果小球中心点小于活动区域则随着用户触屏点移动即可
 				Log.e("test", "小于");
-				SmallRockerCircleY = (int) event.getY() - default_offset;
+				Log.e("Y:", String.valueOf(event.getY()));
+				if (event.getY() > 100) {
+					SmallRockerCircleY = (int) event.getY() - default_offset;
+					//进行一次判断 如果超过了大小 则 返回原来的位置	
+				}else {
+					SmallRockerCircleY = default_SmallRockerCircleY;
+					Log.e("12.1", "返回");
+				}
+			
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			Log.e("ACTION_UP", "true");
 			//当释放按键时摇杆要恢复摇杆的位置为初始位置
 			SmallRockerCircleY = default_SmallRockerCircleY;
+			Message message = new Message();
+			message.obj = String.valueOf(i);
+			i++;
+			mHandler.sendMessage(message);
+			 
 		}
 		return true;
 	}

@@ -80,6 +80,11 @@ public class MainActivity extends ActivityGroup implements OnClickListener{
 	private TextView mBottomUpLeftNum;
 	private TextView mBottomUpRightNum;
 	
+	private TextView mBottomCircleLeftNum;
+	private TextView mBottomCircleRightNum;
+	
+	private MySurfaceView mLeftView;
+	private MySurfaceView mRightView;
 	
 	boolean Navi_State;
     @Override
@@ -153,6 +158,9 @@ public class MainActivity extends ActivityGroup implements OnClickListener{
 		mBottomUpLeftNum.setTypeface(tfAirCondition);
 		mBottomUpRightNum = (TextView)findViewById(R.id.right_bottomup_air_num);
 		mBottomUpRightNum.setTypeface(tfAirCondition);
+		
+		mBottomCircleLeftNum = (TextView)findViewById(R.id.left_circle_num);
+		mBottomCircleRightNum = (TextView)findViewById(R.id.right_circle_num);
 		bottomSlideInitial();
     }
 
@@ -175,18 +183,24 @@ public class MainActivity extends ActivityGroup implements OnClickListener{
     	bottomSlideLp.addRule(RelativeLayout.CENTER_IN_PARENT);
     	mBottomSlideLight.setLayoutParams(bottomSlideLp);
     	mBottomSlideParent.addView(mBottomSlideLight);
+    	mLeftView = (MySurfaceView)findViewById(R.id.left_bottom_circle);
+    	mRightView = (MySurfaceView)findViewById(R.id.right_bottom_circle);
+    	mLeftView.setview(mBottomCircleLeftNum);
+    	mRightView.setview(mBottomCircleRightNum);
+   
     	mBottomSlideParent.setOnTouchListener(new OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View arg0, MotionEvent event) {
 				float x;
-				int n =pos;
+				int n = pos;
 				switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:
 							x = event.getX();
-							mBottomSlideLight.setLayoutParams(bottomSlideLp);
+							Log.e("down", String.valueOf(x));
+							mBottomSlideLight.setLayoutParams(bottomSlideLp); 
 							mBottomSlideLight.setX(x-150);
-							mBottomSlideLight.setVisibility(View.VISIBLE);
+							mBottomSlideLight.setVisibility(View.VISIBLE);	
 							acModeComfort.setVisibility(View.VISIBLE);
 							acModeAuto.setTextSize(32);
 							acModeEnviroment.setVisibility(View.VISIBLE);
@@ -194,27 +208,29 @@ public class MainActivity extends ActivityGroup implements OnClickListener{
 					case MotionEvent.ACTION_MOVE:
 						    mBottomSlideParent.removeView(mBottomSlideLight);
 							x = event.getX();
-							mBottomSlideParent.addView(mBottomSlideLight);
-							mBottomSlideLight.setLayoutParams(bottomSlideLp);
-							mBottomSlideLight.setX(x-150);
-							int a = Utils.sildeUtil(mStack, x);
-							
-							
-							if ( a == 1) {
-								//String abc = airModeList.get(0);
-								acModeComfort.setText(airModeList.get(n+2));
-								acModeAuto.setText(airModeList.get(n+1));
-								acModeAuto.setTextSize(24);
-								acModeEnviroment.setText(airModeList.get(n));
-								n++;
-				
-							}if (a == 0) {
-								
-								acModeComfort.setText(airModeList.get(n-2));
-								acModeAuto.setText(airModeList.get(n-1));
-								acModeAuto.setTextSize(24);
-								acModeEnviroment.setText(airModeList.get(n));
-								n--;
+							Log.e("move", String.valueOf(x));
+							if (Utils.isInField(x)) {
+								acModeComfort.setVisibility(View.VISIBLE);
+								acModeAuto.setTextSize(32);
+								acModeEnviroment.setVisibility(View.VISIBLE);
+								mBottomSlideParent.addView(mBottomSlideLight);
+								mBottomSlideLight.setLayoutParams(bottomSlideLp);
+								mBottomSlideLight.setX(x-150);
+								int a = Utils.sildeUtil(mStack, x);		
+								if ( a == 1) {
+									//String abc = airModeList.get(0);
+									acModeComfort.setText(airModeList.get(n+2));
+									acModeAuto.setText(airModeList.get(n+1));
+									//acModeAuto.setTextSize(24);
+									acModeEnviroment.setText(airModeList.get(n));
+									n++;
+								}if (a == 0) {
+									acModeComfort.setText(airModeList.get(n-2));
+									acModeAuto.setText(airModeList.get(n-1));
+									//acModeAuto.setTextSize(24);
+									acModeEnviroment.setText(airModeList.get(n));
+									n--;
+								}
 							}
 						break;
 					case MotionEvent.ACTION_UP:
@@ -251,7 +267,7 @@ public class MainActivity extends ActivityGroup implements OnClickListener{
 		case R.id.left_bottom_circle_up:
 			temp = Integer.valueOf(acLeftNum.getText().toString());
 			temp++;
-			acLeftNum.setText(String.valueOf(temp));
+			acLeftNum.setText(String.valueOf(temp));  
 			break;
 		case R.id.left_bottom_circle_down:
 			temp = Integer.valueOf(acLeftNum.getText().toString());
